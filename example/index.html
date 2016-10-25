@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AJAX mock bar</title>
+
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script src="/vendor.bundle.js"></script>
+        <script src="/app.js"></script>
+
+        <br><br><br><br><br>
+
+        <button onclick="window.request('http://localhost:3000');">Request localhost:3000</button><br>
+        <button onclick="window.request('http://localhost:3000/real.json');">Request localhost:3000/real.json</button><br>
+        <button onclick="window.request('/test');">Request localhost:3000/test</button><br>
+        <button onclick="window.request('http://localhost:3000/404');">Request localhost:3000/404</button>
+    </body>
+</html>
