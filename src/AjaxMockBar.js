@@ -13,7 +13,7 @@ let style = false;
 class AjaxMockBar {
     constructor(mocks, autoStart, width) {
         if (!style) {
-            require('./Styles.less');
+            require('../src/Styles.less');
             style = true;
         }
 
