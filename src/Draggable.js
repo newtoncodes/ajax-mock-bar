@@ -2,95 +2,55 @@
 
 function Draggable(elem, options) {
     options = Object(options);
-
-    // Handlers
     options.onStart = options.onStart || function () {};
     options.onStop = options.onStop || function () {};
     options.onDrag = options.onDrag || function () {};
 
-    // Query the elements
-    var allElms = [elem];
+    elem.style.position = "absolute";
 
-    // Each element
-    for (var i = 0; i < allElms.length; ++i) {
-        (function (cEl) {
+    let draggable = {drag: false};
 
-            // TODO
-            // document.body.appendChild(cEl);
-            cEl.style.position = "absolute";
+    let moveHandler = function (e) {
+        if (!draggable.drag) return;
+        if (options.onDrag.call(this, e, elem) === false) return;
 
-            // create _simpleDraggable object for this dom element
-            cEl._simpleDraggable = {
-                drag: false
-            };
+        if (!options.onlyY) elem.style.left = draggable.elPos.x + e.clientX - draggable.mousePos.x + "px";
+        if (!options.onlyX) elem.style.top = draggable.elPos.y + e.clientY - draggable.mousePos.y + "px";
+    };
 
-            // listen for mousedown
-            cEl.addEventListener("mousedown", function (e) {
+    let upHandler = function (e) {
+        draggable.drag = false;
 
-                // set true for drag field
-                cEl._simpleDraggable.drag = true;
+        window.removeEventListener('mouseup', upHandler);
+        window.removeEventListener('mousemove', moveHandler);
+        elem.addEventListener('mousedown', downHandler);
 
-                // set the mouse position on the page
-                cEl._simpleDraggable.mousePos = {
-                    x: e.clientX,
-                    y: e.clientY
-                };
+        document.body.className = document.body.className.replace(/ajax-mock-bar-disable-select/g, '').replace(/\s+/g, ' ').replace(/(\s+$|^\s+)/, '');
 
-                // set the element position
-                cEl._simpleDraggable.elPos = {
-                    x: cEl.offsetLeft,
-                    y: cEl.offsetTop
-                };
+        options.onStop.call(this, e, elem);
+    };
 
-                // call start handler
-                options.onStart.call(this, e, cEl);
-            });
+    let downHandler = function (e) {
+        draggable.drag = true;
+        draggable.mousePos = {
+            x: e.clientX,
+            y: e.clientY
+        };
+        draggable.elPos = {
+            x: elem.offsetLeft,
+            y: elem.offsetTop
+        };
 
-            // listen for mouse up
-            cEl.addEventListener("mouseup", function (e) {
+        elem.removeEventListener('mousedown', downHandler);
+        window.addEventListener('mouseup', upHandler);
+        window.addEventListener('mousemove', moveHandler);
 
-                // drag: false
-                cEl._simpleDraggable.drag = false;
+        document.body.className += ' ajax-mock-bar-disable-select';
 
-                // call stop handler
-                options.onStop.call(this, e, cEl);
-            });
+        options.onStart.call(this, e, elem);
+    };
 
-            // listen for mouse out of body
-            document.body.addEventListener("mouseout", function (e) {
-
-                // drag: false
-                cEl._simpleDraggable.drag = false;
-
-                // call stop handler
-                options.onStop.call(this, e, cEl);
-            });
-
-            // listen for mouse move
-            document.body.addEventListener("mousemove", function (e) {
-
-                // if drag is NOT true, return
-                if (!cEl._simpleDraggable.drag) {
-                    return;
-                }
-
-                // if drag handler returns false, don't do anything
-                if (options.onDrag.call(this, e, cEl) === false) {
-                    return;
-                }
-
-                // move only on y axis
-                if (!options.onlyY) {
-                    cEl.style.left = cEl._simpleDraggable.elPos.x + e.clientX - cEl._simpleDraggable.mousePos.x + "px";
-                }
-
-                // move only on x axis
-                if (!options.onlyX) {
-                    cEl.style.top = cEl._simpleDraggable.elPos.y + e.clientY - cEl._simpleDraggable.mousePos.y + "px";
-                }
-            });
-        })(allElms[i]);
-    }
+    elem.addEventListener('mousedown', downHandler);
 }
 
 

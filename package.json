@@ -1,7 +1,7 @@
 {
   "name": "ajax-mock-bar",
   "description": "AJAX/XHR mock bar - change mockups runtime.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./es5/index.js",
   "scripts": {
     "build:es5": "babel src --out-dir es5",
