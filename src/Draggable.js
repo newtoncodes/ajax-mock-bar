@@ -31,6 +31,9 @@ function Draggable(elem, options) {
     };
 
     let downHandler = function (e) {
+        let tag = e.target.nodeName.toLowerCase();
+        if (tag === 'select' || tag === 'input' || tag === 'textarea') return;
+
         draggable.drag = true;
         draggable.mousePos = {
             x: e.clientX,
